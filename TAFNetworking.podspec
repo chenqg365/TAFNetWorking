@@ -1,42 +1,79 @@
-#
-# Be sure to run `pod lib lint TAFNetworking.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
-  s.name             = 'TAFNetworking'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of TAFNetworking.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
-
-  s.homepage         = 'https://github.com/chenqg365/TAFNetworking'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'chenqg365' => 'chenqg3721@163.com' }
-  s.source           = { :git => 'https://github.com/chenqg365/TAFNetworking.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
-  s.ios.deployment_target = '8.0'
-
-  s.source_files = 'TAFNetworking/Classes/**/*'
+  s.name                = 'TAFNetworking'
+  s.version             = '3.2.1'
+  s.license             = 'MIT'
+  s.summary             = 'A delightful iOS and OS X networking framework.'
+  s.homepage            = 'https://github.com/chenqg365/TAFNetworking'
+  s.license             = { :type => 'MIT', :file => 'LICENSE' }
+  s.author              = { 'chenqg' => 'chenqg3721@163.com' }
+  s.source              = { :git => 'https://github.com/chenqg365/TAFNetworking.git', :tag => s.version.to_s }
+  s.requires_arc        = true
   
-  # s.resource_bundles = {
-  #   'TAFNetworking' => ['TAFNetworking/Assets/*.png']
-  # }
+  s.public_header_files = 'TAFNetworking/AFNetworking.h'
+  s.source_files        = 'TAFNetworking/AFNetworking.h'
+  
+  pch_AF = <<-EOS
+#ifndef TARGET_OS_IOS
+  #define TARGET_OS_IOS TARGET_OS_IPHONE
+#endif
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+#ifndef TARGET_OS_WATCH
+  #define TARGET_OS_WATCH 0
+#endif
+
+#ifndef TARGET_OS_TV
+  #define TARGET_OS_TV 0
+#endif
+EOS
+  s.prefix_header_contents = pch_AF
+  
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.9'
+  s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
+  
+  s.subspec 'Serialization' do |ss|
+    ss.source_files = 'TAFNetworking/AFURL{Request,Response}Serialization.{h,m}'
+    ss.public_header_files = 'TAFNetworking/AFURL{Request,Response}Serialization.h'
+    ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
+    ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
+    ss.osx.frameworks = 'CoreServices'
+  end
+
+  s.subspec 'Security' do |ss|
+    ss.source_files = 'TAFNetworking/AFSecurityPolicy.{h,m}'
+    ss.public_header_files = 'TAFNetworking/AFSecurityPolicy.h'
+    ss.frameworks = 'Security'
+  end
+
+  s.subspec 'Reachability' do |ss|
+    ss.ios.deployment_target = '8.0'
+    ss.osx.deployment_target = '10.9'
+    ss.tvos.deployment_target = '9.0'
+
+    ss.source_files = 'TAFNetworking/AFNetworkReachabilityManager.{h,m}'
+    ss.public_header_files = 'TAFNetworking/AFNetworkReachabilityManager.h'
+
+    ss.frameworks = 'SystemConfiguration'
+  end
+
+  s.subspec 'NSURLSession' do |ss|
+    ss.dependency 'TAFNetworking/Serialization'
+    ss.ios.dependency 'TAFNetworking/Reachability'
+    ss.osx.dependency 'TAFNetworking/Reachability'
+    ss.tvos.dependency 'TAFNetworking/Reachability'
+    ss.dependency 'TAFNetworking/Security'
+
+    ss.source_files = 'TAFNetworking/AF{URL,HTTP}SessionManager.{h,m}', 'TAFNetworking/AFCompatibilityMacros.h'
+    ss.public_header_files = 'TAFNetworking/AF{URL,HTTP}SessionManager.h', 'TAFNetworking/AFCompatibilityMacros.h'
+  end
+
+  s.subspec 'UIKit' do |ss|
+    ss.ios.deployment_target = '8.0'
+    ss.tvos.deployment_target = '9.0'
+    ss.dependency 'TAFNetworking/NSURLSession'
+
+    ss.public_header_files = 'UIKit+AFNetworking/*.h'
+    ss.source_files = 'UIKit+AFNetworking'
+  end
 end
