@@ -3,10 +3,10 @@ Pod::Spec.new do |s|
   s.version             = '3.2.1'
   s.license             = 'MIT'
   s.summary             = 'A delightful iOS and OS X networking framework.'
-  s.homepage            = 'https://github.com/chenqg365/TAFNetworking'
+  s.homepage            = 'https://github.com/heng66/TAFNetworking'
   s.license             = { :type => 'MIT', :file => 'LICENSE' }
-  s.author              = { 'chenqg' => 'chenqg3721@163.com' }
-  s.source              = { :git => 'https://github.com/chenqg365/TAFNetworking.git', :tag => s.version.to_s }
+  s.author              = { 'heng66' => 'chenqg3721@gmail.com' }
+  s.source              = { :git => 'https://github.com/heng66/TAFNetworking.git', :tag => s.version.to_s }
   s.requires_arc        = true
   
   s.public_header_files = 'TAFNetworking/AFNetworking.h'
